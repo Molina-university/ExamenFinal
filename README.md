@@ -66,39 +66,6 @@ Consejos prácticos basados en el estado del lote para optimizar el riego y el u
 
 # 🏗️ Arquitectura del proyecto
 
-ExamenFinal/                                        <- Carpeta raíz del proyecto
-│
-├── README.md                                       <- 📘 Documentación principal
-├── .gitignore                                      
-│
-├── src/                                            <- 💻 Código fuente
-│   ├── Main.java                                   <- 🚀 Punto de entrada del sistema
-│
-│   ├── models/                                     <- 🌱 Clases principales
-│   │   ├── Lote.java                               <- Representa un lote agrícola
-│   │   ├── Cultivo.java                            <- Representa un cultivo
-│   │   ├── Sensor.java                             <- Clase abstracta/base de sensores
-│   │   ├── SensorHumedad.java                      <- Sensor de humedad del suelo
-│   │   ├── SensorTemperatura.java                  <- Sensor de temperatura ambiental
-│   │   └── Alerta.java                             <- Manejo de alertas del sistema
-│
-│   ├── services/                                   <- ⚙️ Lógica de negocio
-│   │   ├── MonitorService.java                     <- Monitorea lotes y genera alertas
-│   │   ├── SimuladorService.java                   <- Genera datos simulados de sensores
-│   │   └── RecomendacionService.java               <- Reglas de riego/fertilización
-│
-│   ├── ui/                                         <- 🎨 Interfaz de usuario
-│   │   ├── ConsolaUI.java                          <- Interfaz por consola (menús simples)
-│   │   └── GUI.java                                <- Interfaz gráfica o móvil
-│
-│   └── utils/                                      <- 🛠️ Utilidades generales
-│       └── Logger.java                             <- Registro de eventos y mensajes
-│
-└── tests/                                          <- ✅ Pruebas unitarias
-    ├── LoteTest.java
-    ├── SensorTest.java
-    └── MonitorServiceTest.java
-
 
 
 # ⚡ Tecnologías Utilizadas
@@ -153,6 +120,6 @@ and open the project directory to run the program
 
 ## Authors
 
-- [@Jhoan Molina 192490](https://github.com/Molina-university)
-- [@Adrian Rincon 192490](https://github.com/Molina-university)
-- [@Isaac algo 192490](https://github.com/Molina-university)
+- [@Jhoan Alexander Molina Gomez    192490](https://github.com/Molina-university)
+- [@Adrian Camilo Rincon Ascanio    192490](https://github.com/Molina-university)
+- [@Isaac David García Vesga        192535](https://github.com/Isaac-memoruy)
