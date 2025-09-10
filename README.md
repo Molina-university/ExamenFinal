@@ -121,5 +121,5 @@ and open the project directory to run the program
 ## Authors
 
 - [@Jhoan Alexander Molina Gomez    192490](https://github.com/Molina-university)
-- [@Adrian Camilo Rincon Ascanio    192490](https://github.com/Molina-university)
+- [@Adrian Camilo Rincon Ascanio    192531](https://github.com/CamiloRincon17)
 - [@Isaac David García Vesga        192535](https://github.com/Isaac-memoruy)
