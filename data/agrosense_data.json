@@ -1,0 +1,122 @@
+{
+  "lotes": [
+    {
+      "id": "L001",
+      "nombre": "Sector Norte",
+      "tipoCultivo": "Maíz",
+      "area": 15.5,
+      "sensores": [
+        {
+          "tipo": "HUMEDAD",
+          "id": "H001",
+          "ubicacion": "Centro del lote",
+          "class": "SensorHumedad"
+        },
+        {
+          "tipo": "TEMPERATURA",
+          "id": "T001",
+          "ubicacion": "Centro del lote",
+          "class": "SensorTemperatura"
+        }
+      ]
+    },
+    {
+      "id": "L002",
+      "nombre": "Sector Sur",
+      "tipoCultivo": "Tomate",
+      "area": 8.3,
+      "sensores": [
+        {
+          "tipo": "HUMEDAD",
+          "id": "H002",
+          "ubicacion": "Zona A",
+          "class": "SensorHumedad"
+        },
+        {
+          "tipo": "HUMEDAD",
+          "id": "H003",
+          "ubicacion": "Zona B",
+          "class": "SensorHumedad"
+        },
+        {
+          "tipo": "TEMPERATURA",
+          "id": "T002",
+          "ubicacion": "Zona Central",
+          "class": "SensorTemperatura"
+        }
+      ]
+    },
+    {
+      "id": "L003",
+      "nombre": "Invernadero Principal",
+      "tipoCultivo": "Lechuga",
+      "area": 4.2,
+      "sensores": [
+        {
+          "tipo": "HUMEDAD",
+          "id": "H004",
+          "ubicacion": "Entrada",
+          "class": "SensorHumedad"
+        },
+        {
+          "tipo": "TEMPERATURA",
+          "id": "T003",
+          "ubicacion": "Centro",
+          "class": "SensorTemperatura"
+        }
+      ]
+    },
+    {
+      "id": "L004",
+      "nombre": "Campo Este",
+      "tipoCultivo": "Zanahorias",
+      "area": 12.0,
+      "sensores": [
+        {
+          "tipo": "HUMEDAD",
+          "id": "H005",
+          "ubicacion": "Norte",
+          "class": "SensorHumedad"
+        },
+        {
+          "tipo": "HUMEDAD",
+          "id": "H006",
+          "ubicacion": "Sur",
+          "class": "SensorHumedad"
+        }
+      ]
+    }
+  ],
+  "alertas": [
+    {
+      "mensaje": "Humedad crítica baja (25.34%)",
+      "nivel": "CRITICAL",
+      "fechaHora": "2025-11-28T20:30:15",
+      "loteId": "L001"
+    },
+    {
+      "mensaje": "Humedad baja (42.18%)",
+      "nivel": "WARNING",
+      "fechaHora": "2025-11-28T20:31:22",
+      "loteId": "L002"
+    },
+    {
+      "mensaje": "Temperatura crítica alta (36.72°C)",
+      "nivel": "CRITICAL",
+      "fechaHora": "2025-11-28T20:32:45",
+      "loteId": "L003"
+    },
+    {
+      "mensaje": "Humedad baja (48.95%)",
+      "nivel": "WARNING",
+      "fechaHora": "2025-11-28T20:33:10",
+      "loteId": "L004"
+    },
+    {
+      "mensaje": "Temperatura alta (31.25°C)",
+      "nivel": "WARNING",
+      "fechaHora": "2025-11-28T20:34:05",
+      "loteId": "L002"
+    }
+  ]
+}

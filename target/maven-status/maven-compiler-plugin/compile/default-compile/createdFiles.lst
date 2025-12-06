@@ -1,0 +1,17 @@
+com\agrosense\model\SensorHumedad.class
+com\agrosense\service\SensorService.class
+com\agrosense\service\GestorLotes.class
+com\agrosense\model\Alerta.class
+com\agrosense\model\Sensor.class
+com\agrosense\service\RecomendacionService.class
+com\agrosense\model\Lote.class
+com\agrosense\model\Alerta$Nivel.class
+com\agrosense\model\Medicion.class
+com\agrosense\model\SensorTemperatura.class
+com\agrosense\ui\ConsoleUI.class
+com\agrosense\ui\Launcher.class
+com\agrosense\ui\AgroSenseFX.class
+com\agrosense\ui\AgroSenseFX$MedicionViewModel.class
+com\agrosense\service\ToonPersistenceService.class
+com\agrosense\model\Recomendacion.class
+com\agrosense\service\AlertaService.class
