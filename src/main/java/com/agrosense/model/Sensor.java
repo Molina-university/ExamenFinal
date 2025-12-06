@@ -23,9 +23,13 @@ public abstract class Sensor {
         return ubicacion;
     }
 
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+
     // Método abstracto para simular la lectura de datos
     public abstract double leerDato();
-    
+
     @Override
     public String toString() {
         return "Sensor{" + "id='" + id + '\'' + ", tipo='" + tipo + '\'' + ", ubicacion='" + ubicacion + '\'' + '}';

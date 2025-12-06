@@ -73,12 +73,28 @@ public class ToonPersistenceService {
         data.lotes = new ArrayList<>();
         data.alertas = new ArrayList<>();
 
-        // Parse Lotes
-        Pattern lotePattern = Pattern.compile("LOTE \\{(.*?)\\}", Pattern.DOTALL);
-        Matcher loteMatcher = lotePattern.matcher(content);
+        // Parse Lotes - manual parsing to handle nested blocks
+        int pos = 0;
+        while ((pos = content.indexOf("LOTE {", pos)) != -1) {
+            pos += 6; // skip "LOTE {"
 
-        while (loteMatcher.find()) {
-            String loteBlock = loteMatcher.group(1);
+            // Find matching closing brace by counting
+            int braceCount = 1;
+            int endPos = pos;
+            while (braceCount > 0 && endPos < content.length()) {
+                if (content.charAt(endPos) == '{')
+                    braceCount++;
+                else if (content.charAt(endPos) == '}')
+                    braceCount--;
+                endPos++;
+            }
+
+            if (braceCount != 0) {
+                System.err.println("[ERROR] Malformed LOTE block");
+                break;
+            }
+
+            String loteBlock = content.substring(pos, endPos - 1);
             String id = extractValue(loteBlock, "ID");
             String nombre = extractValue(loteBlock, "NOMBRE");
             String cultivo = extractValue(loteBlock, "CULTIVO");
@@ -106,19 +122,26 @@ public class ToonPersistenceService {
             Pattern sensorPattern = Pattern.compile("SENSOR \\{(.*?)\\}", Pattern.DOTALL);
             Matcher sensorMatcher = sensorPattern.matcher(loteBlock);
 
+            int sensorCount = 0;
             while (sensorMatcher.find()) {
                 String sensorBlock = sensorMatcher.group(1);
                 String sId = extractValue(sensorBlock, "ID");
                 String sTipo = extractValue(sensorBlock, "TIPO");
                 String sUbicacion = extractValue(sensorBlock, "UBICACION");
 
+                System.out.println("[PARSER] Encontrado sensor: ID=" + sId + ", TIPO=" + sTipo + ", LOC=" + sUbicacion);
+
                 if ("HUMEDAD".equals(sTipo)) {
                     lote.agregarSensor(new SensorHumedad(sId, sUbicacion));
                 } else {
                     lote.agregarSensor(new SensorTemperatura(sId, sUbicacion));
                 }
+                sensorCount++;
             }
+            System.out.println("[PARSER] Lote " + id + " cargó " + sensorCount + " sensores");
             data.lotes.add(lote);
+
+            pos = endPos;
         }
 
         // Parse Alertas

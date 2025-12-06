@@ -32,6 +32,7 @@ public class AgroSenseFX extends Application {
     private TableView<Lote> tableLotes;
     private TableView<MedicionViewModel> tableMonitoreo;
     private TableView<Alerta> tableAlertas;
+    private TableView<SensorViewModel> tableSensores;
     private TextArea txtRecomendaciones;
     private ComboBox<String> comboLotesSensor;
 
@@ -40,13 +41,15 @@ public class AgroSenseFX extends Application {
     private static final String ACCENT_COLOR = "#4CAF50";
     private static final String BG_COLOR = "#F5F8FA";
 
+    private boolean isReady = false; // Flag to prevent saves during initialization
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        // Auto-load data
+        // Auto-load data BEFORE creating UI (don't update tables yet)
         cargarDatosAutomaticamente();
 
         BorderPane root = new BorderPane();
@@ -67,6 +70,16 @@ public class AgroSenseFX extends Application {
                 createTab("⚠️ Alertas", createAlertasView()));
 
         root.setCenter(tabPane);
+
+        // NOW update tables with loaded data (tables exist now)
+        actualizarTablaLotes();
+        actualizarTablaSensores(); // Cargar sensores al inicio
+        actualizarCombos();
+        actualizarAlertas();
+
+        // IMPORTANT: Enable auto-save ONLY after everything is loaded
+        isReady = true;
+        System.out.println("[INFO] Aplicación lista. Auto-guardado activado.");
 
         Scene scene = new Scene(root, 1100, 700);
         primaryStage.setTitle("AgroSense - Sistema de Monitoreo Agrícola");
@@ -171,17 +184,56 @@ public class AgroSenseFX extends Application {
 
         TableColumn<Lote, String> colId = new TableColumn<>("ID");
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colId.setPrefWidth(80);
 
         TableColumn<Lote, String> colNombre = new TableColumn<>("Nombre");
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colNombre.setPrefWidth(150);
 
         TableColumn<Lote, String> colCultivo = new TableColumn<>("Cultivo");
         colCultivo.setCellValueFactory(new PropertyValueFactory<>("tipoCultivo"));
+        colCultivo.setPrefWidth(120);
 
         TableColumn<Lote, Double> colArea = new TableColumn<>("Área (ha)");
         colArea.setCellValueFactory(new PropertyValueFactory<>("area"));
+        colArea.setPrefWidth(100);
 
-        tableLotes.getColumns().addAll(colId, colNombre, colCultivo, colArea);
+        // Columna de Acciones
+        TableColumn<Lote, Void> colAcciones = new TableColumn<>("Acciones");
+        colAcciones.setPrefWidth(200);
+        colAcciones.setCellFactory(col -> {
+            return new TableCell<Lote, Void>() {
+                private final Button btnEditar = new Button("Editar");
+                private final Button btnEliminar = new Button("Eliminar");
+                private final HBox pane = new HBox(10, btnEditar, btnEliminar);
+
+                {
+                    btnEditar.setStyle(
+                            "-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+                    btnEliminar.setStyle(
+                            "-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+                    pane.setAlignment(Pos.CENTER);
+
+                    btnEditar.setOnAction(event -> {
+                        Lote lote = getTableView().getItems().get(getIndex());
+                        editarLote(lote);
+                    });
+
+                    btnEliminar.setOnAction(event -> {
+                        Lote lote = getTableView().getItems().get(getIndex());
+                        eliminarLote(lote);
+                    });
+                }
+
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setGraphic(empty ? null : pane);
+                }
+            };
+        });
+
+        tableLotes.getColumns().addAll(colId, colNombre, colCultivo, colArea, colAcciones);
         tableLotes.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         tableCard.getChildren().add(tableLotes);
@@ -191,19 +243,95 @@ public class AgroSenseFX extends Application {
         return layout;
     }
 
+    private void editarLote(Lote lote) {
+        Dialog<Lote> dialog = new Dialog<>();
+        dialog.setTitle("Editar Lote");
+        dialog.setHeaderText("Modificar datos del lote: " + lote.getId());
+
+        ButtonType guardarButtonType = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(guardarButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+
+        TextField txtNombre = new TextField(lote.getNombre());
+        TextField txtCultivo = new TextField(lote.getTipoCultivo());
+        TextField txtArea = new TextField(String.valueOf(lote.getArea()));
+
+        grid.add(new Label("Nombre:"), 0, 0);
+        grid.add(txtNombre, 1, 0);
+        grid.add(new Label("Cultivo:"), 0, 1);
+        grid.add(txtCultivo, 1, 1);
+        grid.add(new Label("Área (ha):"), 0, 2);
+        grid.add(txtArea, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == guardarButtonType) {
+                try {
+                    // Remover y crear nuevo lote con datos actualizados
+                    gestorLotes.eliminarLote(lote.getId());
+                    Lote loteActualizado = new Lote(lote.getId(), txtNombre.getText(),
+                            txtCultivo.getText(), Double.parseDouble(txtArea.getText()));
+                    // Restaurar sensores
+                    for (Sensor s : lote.getSensores()) {
+                        loteActualizado.agregarSensor(s);
+                    }
+                    gestorLotes.registrarLote(loteActualizado);
+                    return loteActualizado;
+                } catch (NumberFormatException e) {
+                    showAlert("Error", "El área debe ser un número válido", Alert.AlertType.ERROR);
+                    return null;
+                }
+            }
+            return null;
+        });
+
+        dialog.showAndWait().ifPresent(result -> {
+            if (result != null) {
+                guardarDatosAutomaticamente();
+                actualizarTablaLotes();
+                actualizarCombos();
+                showAlert("Éxito", "Lote actualizado correctamente", Alert.AlertType.INFORMATION);
+            }
+        });
+    }
+
+    private void eliminarLote(Lote lote) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                "¿Está seguro de eliminar el lote '" + lote.getNombre() + "'?\n" +
+                        "Esto eliminará también todos sus sensores.",
+                ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Confirmar Eliminación");
+        alert.setHeaderText(null);
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+                gestorLotes.eliminarLote(lote.getId());
+                guardarDatosAutomaticamente();
+                actualizarTablaLotes();
+                actualizarCombos();
+                showAlert("Éxito", "Lote eliminado correctamente", Alert.AlertType.INFORMATION);
+            }
+        });
+    }
+
     // --- Sensores View ---
     private VBox createSensoresView() {
         VBox layout = new VBox(20);
         layout.setPadding(new Insets(20));
 
-        VBox formCard = createCard("📡 Agregar Sensor a Lote");
+        // 1. Formulario (Create / Update)
+        VBox formCard = createCard("📡 Gestión de Sensores");
         GridPane grid = new GridPane();
         grid.setHgap(15);
         grid.setVgap(15);
         grid.setPadding(new Insets(10));
 
         comboLotesSensor = new ComboBox<>();
-        comboLotesSensor.setPromptText("Seleccionar Lote");
+        comboLotesSensor.setPromptText("Seleccionar Lote para Agregar");
         comboLotesSensor.setMaxWidth(Double.MAX_VALUE);
 
         TextField txtId = new TextField();
@@ -220,10 +348,81 @@ public class AgroSenseFX extends Application {
 
         Button btnAgregar = createStyledButton("Agregar Sensor");
         btnAgregar.setStyle("-fx-background-color: " + ACCENT_COLOR + "; -fx-text-fill: white; -fx-font-weight: bold;");
+
+        grid.add(btnAgregar, 1, 4);
+
+        formCard.getChildren().add(grid);
+
+        // 2. Tabla de Sensores (Read)
+        VBox tableCard = createCard("📋 Lista de Sensores");
+        tableSensores = new TableView<>();
+
+        TableColumn<SensorViewModel, String> colLote = new TableColumn<>("Lote");
+        colLote.setCellValueFactory(new PropertyValueFactory<>("loteNombre"));
+        colLote.setPrefWidth(150);
+
+        TableColumn<SensorViewModel, String> colId = new TableColumn<>("ID Sensor");
+        colId.setCellValueFactory(new PropertyValueFactory<>("sensorId"));
+        colId.setPrefWidth(100);
+
+        TableColumn<SensorViewModel, String> colTipo = new TableColumn<>("Tipo");
+        colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        colTipo.setPrefWidth(120);
+
+        TableColumn<SensorViewModel, String> colUbicacion = new TableColumn<>("Ubicación");
+        colUbicacion.setCellValueFactory(new PropertyValueFactory<>("ubicacion"));
+        colUbicacion.setPrefWidth(200);
+
+        // Columna de Acciones
+        TableColumn<SensorViewModel, Void> colAcciones = new TableColumn<>("Acciones");
+        colAcciones.setPrefWidth(200);
+        colAcciones.setCellFactory(col -> {
+            return new TableCell<SensorViewModel, Void>() {
+                private final Button btnEditar = new Button("Editar");
+                private final Button btnEliminar = new Button("Eliminar");
+                private final HBox pane = new HBox(10, btnEditar, btnEliminar);
+
+                {
+                    btnEditar.setStyle(
+                            "-fx-background-color: #18c838ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+                    btnEliminar.setStyle(
+                            "-fx-background-color: #272424ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+                    pane.setAlignment(Pos.CENTER);
+
+                    btnEditar.setOnAction(event -> {
+                        SensorViewModel svm = getTableView().getItems().get(getIndex());
+                        editarSensor(svm.getSensor(), svm.getLoteId());
+                    });
+
+                    btnEliminar.setOnAction(event -> {
+                        SensorViewModel svm = getTableView().getItems().get(getIndex());
+                        eliminarSensor(svm.getSensor(), svm.getLoteId());
+                    });
+                }
+
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setGraphic(empty ? null : pane);
+                }
+            };
+        });
+
+        tableSensores.getColumns().addAll(colLote, colId, colTipo, colUbicacion, colAcciones);
+        tableSensores.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        tableCard.getChildren().add(tableSensores);
+        VBox.setVgrow(tableCard, Priority.ALWAYS);
+
+        // Lógica de Botones
         btnAgregar.setOnAction(e -> {
             String selectedLote = comboLotesSensor.getValue();
             if (selectedLote == null) {
                 showAlert("Error", "Seleccione un lote", Alert.AlertType.ERROR);
+                return;
+            }
+            if (txtId.getText().isEmpty() || txtUbicacion.getText().isEmpty()) {
+                showAlert("Error", "Todos los campos son obligatorios", Alert.AlertType.ERROR);
                 return;
             }
 
@@ -232,33 +431,62 @@ public class AgroSenseFX extends Application {
 
             if (loteOpt.isPresent()) {
                 Lote lote = loteOpt.get();
+                // Verificar si ya existe
+                boolean existe = lote.getSensores().stream().anyMatch(s -> s.getId().equals(txtId.getText()));
+                if (existe) {
+                    showAlert("Error", "Ya existe un sensor con este ID en el lote", Alert.AlertType.ERROR);
+                    return;
+                }
+
                 Sensor sensor = comboTipo.getValue().equals("HUMEDAD")
                         ? new SensorHumedad(txtId.getText(), txtUbicacion.getText())
                         : new SensorTemperatura(txtId.getText(), txtUbicacion.getText());
 
                 lote.agregarSensor(sensor);
                 guardarDatosAutomaticamente();
-                actualizarTablaLotes();
+                actualizarTablaSensores();
                 txtId.clear();
                 txtUbicacion.clear();
                 showAlert("Éxito", "Sensor agregado correctamente", Alert.AlertType.INFORMATION);
             }
         });
 
-        grid.add(btnAgregar, 1, 4);
-        formCard.getChildren().add(grid);
-
-        // Info Card
-        VBox infoCard = createCard("💡 Información");
-        Label info = new Label("Los sensores IoT monitorean las condiciones del cultivo en tiempo real.\n\n" +
-                "• Sensores de HUMEDAD: Miden el nivel de humedad del suelo (0-100%)\n" +
-                "• Sensores de TEMPERATURA: Registran la temperatura ambiente (°C)");
-        info.setWrapText(true);
-        info.setStyle("-fx-font-size: 14px;");
-        infoCard.getChildren().add(info);
-
-        layout.getChildren().addAll(formCard, infoCard);
+        layout.getChildren().addAll(formCard, tableCard);
         return layout;
+    }
+
+    private void editarSensor(Sensor sensor, String loteId) {
+        TextInputDialog dialog = new TextInputDialog(sensor.getUbicacion());
+        dialog.setTitle("Editar Sensor");
+        dialog.setHeaderText("Modificar ubicación del sensor: " + sensor.getId());
+        dialog.setContentText("Nueva ubicación:");
+
+        dialog.showAndWait().ifPresent(nuevaUbicacion -> {
+            sensor.setUbicacion(nuevaUbicacion);
+            guardarDatosAutomaticamente();
+            actualizarTablaSensores();
+            showAlert("Éxito", "Sensor actualizado correctamente", Alert.AlertType.INFORMATION);
+        });
+    }
+
+    private void eliminarSensor(Sensor sensor, String loteId) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                "¿Está seguro de eliminar el sensor '" + sensor.getId() + "'?",
+                ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Confirmar Eliminación");
+        alert.setHeaderText(null);
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+                var loteOpt = gestorLotes.buscarPorId(loteId);
+                if (loteOpt.isPresent()) {
+                    loteOpt.get().getSensores().remove(sensor);
+                    guardarDatosAutomaticamente();
+                    actualizarTablaSensores();
+                    showAlert("Éxito", "Sensor eliminado correctamente", Alert.AlertType.INFORMATION);
+                }
+            }
+        });
     }
 
     // --- Monitoreo View ---
@@ -327,6 +555,27 @@ public class AgroSenseFX extends Application {
         alertsCard.getChildren().add(tableAlertas);
         VBox.setVgrow(alertsCard, Priority.ALWAYS);
 
+        // Botón para limpiar alertas
+        Button btnLimpiarAlertas = createStyledButton("🧹 Limpiar Alertas");
+        btnLimpiarAlertas.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold;");
+        btnLimpiarAlertas.setOnAction(e -> {
+            Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION,
+                    "¿Está seguro de eliminar todas las alertas?",
+                    ButtonType.YES, ButtonType.NO);
+            confirmacion.setTitle("Confirmar Limpieza");
+            confirmacion.setHeaderText(null);
+            confirmacion.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.YES) {
+                    alertaService.getHistorialAlertas().clear();
+                    guardarDatosAutomaticamente();
+                    actualizarAlertas();
+                    showAlert("Éxito", "Todas las alertas han sido eliminadas", Alert.AlertType.INFORMATION);
+                }
+            });
+        });
+
+        alertsCard.getChildren().add(btnLimpiarAlertas);
+
         VBox recomCard = createCard("💡 Recomendaciones Inteligentes");
         txtRecomendaciones = new TextArea();
         txtRecomendaciones.setEditable(false);
@@ -391,6 +640,20 @@ public class AgroSenseFX extends Application {
         comboLotesSensor.setItems(items);
     }
 
+    private void actualizarTablaSensores() {
+        ObservableList<SensorViewModel> data = FXCollections.observableArrayList();
+
+        for (Lote lote : gestorLotes.obtenerTodos()) {
+
+            // Agregar sensores de este lote a la tabla
+            for (Sensor sensor : lote.getSensores()) {
+                data.add(new SensorViewModel(lote.getId(), lote.getNombre(), sensor));
+            }
+        }
+
+        tableSensores.setItems(data);
+    }
+
     private void simularMonitoreo() {
         ObservableList<MedicionViewModel> data = FXCollections.observableArrayList();
 
@@ -446,21 +709,33 @@ public class AgroSenseFX extends Application {
     private void cargarDatosAutomaticamente() {
         try {
             var data = toonService.importarDatos();
+            System.out.println(
+                    "✓ Archivo TOON encontrado. Lotes: " + data.lotes.size() + ", Alertas: " + data.alertas.size());
             for (Lote lote : data.lotes)
                 gestorLotes.registrarLote(lote);
             for (Alerta alerta : data.alertas)
                 alertaService.getHistorialAlertas().add(alerta);
-            actualizarTablaLotes();
-            actualizarCombos();
-            actualizarAlertas();
+            // Don't update tables here - they don't exist yet!
             System.out.println("Datos cargados automáticamente desde TOON");
         } catch (Exception e) {
             System.out.println("Iniciando con datos vacíos (TOON no encontrado o error)");
+            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     private void guardarDatosAutomaticamente() {
+        if (!isReady) {
+            System.out.println("[SKIP] Guardado omitido - aplicación aún inicializando");
+            return;
+        }
         try {
+            System.out.println("[DEBUG] Guardando datos...");
+            System.out.println("[DEBUG] Total de lotes: " + gestorLotes.obtenerTodos().size());
+            for (Lote lote : gestorLotes.obtenerTodos()) {
+                System.out
+                        .println("[DEBUG] Lote " + lote.getId() + " tiene " + lote.getSensores().size() + " sensores");
+            }
             toonService.exportarDatos(gestorLotes, alertaService);
             System.out.println("Datos guardados automáticamente en TOON");
         } catch (Exception e) {
@@ -502,6 +777,49 @@ public class AgroSenseFX extends Application {
 
         public String getEstado() {
             return estado.get();
+        }
+    }
+
+    // ViewModel for Sensors Table
+    public static class SensorViewModel {
+        private final SimpleStringProperty loteId;
+        private final SimpleStringProperty loteNombre;
+        private final SimpleStringProperty sensorId;
+        private final SimpleStringProperty tipo;
+        private final SimpleStringProperty ubicacion;
+        private final Sensor sensor;
+
+        public SensorViewModel(String loteId, String loteNombre, Sensor sensor) {
+            this.loteId = new SimpleStringProperty(loteId);
+            this.loteNombre = new SimpleStringProperty(loteNombre);
+            this.sensor = sensor;
+            this.sensorId = new SimpleStringProperty(sensor.getId());
+            this.tipo = new SimpleStringProperty(sensor.getTipo());
+            this.ubicacion = new SimpleStringProperty(sensor.getUbicacion());
+        }
+
+        public String getLoteId() {
+            return loteId.get();
+        }
+
+        public String getLoteNombre() {
+            return loteNombre.get();
+        }
+
+        public String getSensorId() {
+            return sensorId.get();
+        }
+
+        public String getTipo() {
+            return tipo.get();
+        }
+
+        public String getUbicacion() {
+            return ubicacion.get();
+        }
+
+        public Sensor getSensor() {
+            return sensor;
         }
     }
 }
