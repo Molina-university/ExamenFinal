@@ -6,9 +6,9 @@ LOTE {
   ETAPA: "GERMINACION"
   SENSORES {
     SENSOR {
-      ID: 13
+      ID: 50
       TIPO: HUMEDAD
-      UBICACION: "hhh"
+      UBICACION: "sur"
     }
   }
 }

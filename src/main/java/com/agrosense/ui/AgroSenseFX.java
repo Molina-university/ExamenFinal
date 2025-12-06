@@ -456,16 +456,52 @@ public class AgroSenseFX extends Application {
     }
 
     private void editarSensor(Sensor sensor, String loteId) {
-        TextInputDialog dialog = new TextInputDialog(sensor.getUbicacion());
+        // Crear un diálogo personalizado con dos campos
+        Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Editar Sensor");
-        dialog.setHeaderText("Modificar ubicación del sensor: " + sensor.getId());
-        dialog.setContentText("Nueva ubicación:");
+        dialog.setHeaderText("Modificar datos del sensor");
 
-        dialog.showAndWait().ifPresent(nuevaUbicacion -> {
-            sensor.setUbicacion(nuevaUbicacion);
-            guardarDatosAutomaticamente();
-            actualizarTablaSensores();
-            showAlert("Éxito", "Sensor actualizado correctamente", Alert.AlertType.INFORMATION);
+        // Configurar botones
+        ButtonType guardarButtonType = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(guardarButtonType, ButtonType.CANCEL);
+
+        // Crear grid con los campos
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField txtId = new TextField(sensor.getId());
+        TextField txtUbicacion = new TextField(sensor.getUbicacion());
+        TextField txtTipo = new TextField(sensor.getTipo());
+
+        grid.add(new Label("ID del Sensor:"), 0, 0);
+        grid.add(txtId, 1, 0);
+        grid.add(new Label("Ubicación:"), 0, 1);
+        grid.add(txtUbicacion, 1, 1);
+        grid.add(new Label("Tipo:"), 0, 2);
+        grid.add(txtTipo, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Mostrar diálogo y procesar resultado
+        dialog.showAndWait().ifPresent(response -> {
+            if (response == guardarButtonType) {
+                String nuevoId = txtId.getText().trim();
+                String nuevaUbicacion = txtUbicacion.getText().trim();
+
+                if (nuevoId.isEmpty() || nuevaUbicacion.isEmpty()) {
+                    showAlert("Error", "Todos los campos son obligatorios", Alert.AlertType.ERROR);
+                    return;
+                }
+
+                // Actualizar el sensor
+                sensor.setId(nuevoId);
+                sensor.setUbicacion(nuevaUbicacion);
+                guardarDatosAutomaticamente();
+                actualizarTablaSensores();
+                showAlert("Éxito", "Sensor actualizado correctamente", Alert.AlertType.INFORMATION);
+            }
         });
     }
 

@@ -27,6 +27,10 @@ public abstract class Sensor {
         this.ubicacion = ubicacion;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     // Método abstracto para simular la lectura de datos
     public abstract double leerDato();
 
