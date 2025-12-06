@@ -1,77 +1,125 @@
-# AgroSense - Sistema de Monitoreo Agrícola 🌿
+# 📌 Análisis del Problema
 
-Sistema inteligente de monitoreo agrícola con interfaz gráfica moderna en **JavaFX** y persistencia de datos en JSON.
+La agricultura de pequeña escala enfrenta múltiples desafíos debido al uso de métodos tradicionales y la falta de acceso a tecnología. Muchos agricultores riegan y aplican insumos manualmente, basándose solo en la experiencia. Esto conlleva consecuencias como:
 
-## Características
+- **Uso ineficiente del agua:** se riega sin medir la necesidad real del suelo o cultivo, lo que genera un desperdicio valioso.
+- **Baja productividad:** estrés hídrico y plagas se detectan tarde, disminuyendo el rendimiento.
+- **Falta de información objetiva:** sin datos en tiempo real, las decisiones dependen únicamente de la intuición.
 
-- 🌱 **Gestión de Lotes**: Registro y administración de lotes de cultivo
-- 📡 **Sensores IoT**: Monitoreo de humedad y temperatura en tiempo real
-- 📊 **Visualización**: Interfaz gráfica moderna con datos actualizados
-- ⚠️ **Alertas Inteligentes**: Detección automática de condiciones críticas
-- 💡 **Recomendaciones**: Consejos basados en datos para optimizar cultivos
 
-## Requisitos
 
-- Java 17 o superior
-- Maven 3.6+
 
-## Instalación y Ejecución
+## ✅ ¿Qué soluciona nuestro sistema?
 
-### 1. Compilar el proyecto
+**AgroSense** visualiza las condiciones de cultivo para generar alertas y recomendaciones claras, brindando:
 
-```powershell
-mvn clean compile
+- Visualización sencilla del estado de cada lote.
+- Alertas oportunas sobre necesidades de riego o cuidados.
+- Recomendaciones prácticas y fáciles de entender.
+## 🌱 Beneficios para los agricultores
+
+- **Ahorro de agua y recursos:** se riega solo cuando es necesario.
+- **Mejor rendimiento de los cultivos:** al evitar pérdidas, se optimizan los resultados.
+- **Tecnología accesible:** no requiere conocimientos técnicos complejos.
+
+# 👉 Descripción del Proyecto
+
+**AgroSense** es un sistema inteligente de monitoreo agrícola diseñado para optimizar el cuidado de cultivos en pequeñas y medianas explotaciones.  
+Su objetivo es brindar a los agricultores una herramienta accesible que transforme datos en decisiones prácticas, reduciendo pérdidas y aumentando la productividad.
+
+El sistema combina hardware y software de manera integrada:
+- **Sensores de humedad y temperatura** instalados en el campo para recopilar datos clave del suelo y del ambiente.
+- **Plataforma digital** que procesa la información y la presenta en un panel intuitivo.
+- **Alertas inteligentes** que notifican al agricultor cuándo y dónde regar, o si existe riesgo de condiciones críticas.
+- **Recomendaciones personalizadas** para mejorar la eficiencia en el uso del agua y proteger la salud de los cultivos.
+
+*De esta forma, el agricultor puede tener un control en tiempo real de sus lotes, tomar decisiones más informadas y garantizar un uso más sostenible de los recursos.*
+
+# 🎯 Objetivos del Proyecto
+
+## 🌱 Objetivo General
+Diseñar e implementar un sistema de monitoreo agrícola que permita optimizar el uso del agua, mejorar la productividad y facilitar la toma de decisiones de los agricultores mediante el análisis de datos en tiempo real.
+
+## 🌱 Objetivos Específicos
+- Desarrollar una plataforma que represente lotes de cultivo y su estado de manera visual e intuitiva.  
+- Simular el comportamiento de sensores de humedad y temperatura para generar información útil.  
+- Implementar un sistema de alertas que notifique al agricultor sobre condiciones críticas en sus cultivos.  
+- Proporcionar recomendaciones prácticas que promuevan el uso eficiente de recursos.  
+- Mostrar el potencial de integrar tecnología en la agricultura como base para futuros modelos de negocio sostenibles.
+
+# ✨ Características principales 
+
+🌍 **Gestión de Lotes**  
+Permite registrar y visualizar diferentes lotes de cultivo con información relevante sobre su estado.  
+
+🌡️ **Monitoreo de Condiciones**  
+Simulación de sensores de humedad, temperatura y otros factores clave para el crecimiento de los cultivos.  
+
+🔔 **Alertas Inteligentes**  
+Notificaciones cuando se detecten condiciones críticas, como baja humedad o exceso de calor.  
+
+📊 **Visualización de Datos**  
+Representación clara y gráfica del estado de cada lote para facilitar la toma de decisiones.  
+
+💡 **Recomendaciones de Cuidado**  
+Consejos prácticos basados en el estado del lote para optimizar el riego y el uso de recursos.  
+
+# 🏗️ Arquitectura del proyecto
+
+
+
+# ⚡ Tecnologías Utilizadas
+
+👉 Este proyecto integra diversas tecnologías que permiten combinar el monitoreo agrícola con soluciones inteligentes:
+
+- **Java** 🟦  
+  Lenguaje principal para la programación orientada a objetos (POO). Permite estructurar el sistema en clases y servicios.
+
+- **Sensores IoT** 🌡️💧  
+  - Sensor de Humedad → Para medir la humedad del suelo.  
+  - Sensor de Temperatura → Para registrar condiciones ambientales.  
+
+- **Servicios de Lógica** ⚙️  
+  Módulos internos encargados de monitoreo, generación de alertas y recomendaciones.
+
+- **Interfaz de Usuario** 🎨  
+  - Consola (menús simples).  
+  - Futuro: GUI o aplicación móvil.
+
+- **Pruebas Unitarias** ✅  
+  Aseguran la confiabilidad y correcto funcionamiento del sistema.
+
+# Instalación y Uso ⚙️.
+
+Clone the project
+
+```bash
+  git clone https://github.com/Molina-university/ExamenFinal.git
 ```
 
-### 2. Ejecutar la aplicación (JavaFX)
+Go to the project directory
 
-**Opción A - Usando Maven (Recomendado):**
-```powershell
-mvn javafx:run
-```
-o
-```powershell
-mvn exec:java
+```bash
+  cd ExamenFinal
 ```
 
-## Uso de la Aplicación
+and open the project directory to run the program
 
-### Interfaz Gráfica (JavaFX)
-
-1. **Gestión de Lotes** (🌱)
-   - Registre lotes con ID, nombre, tipo de cultivo y área
-   - Vea todos los lotes registrados en la tabla
-
-2. **Sensores** (📡)
-   - Agregue sensores de HUMEDAD o TEMPERATURA a cada lote
-   - Especifique la ubicación del sensor
-
-3. **Monitoreo** (📊)
-   - Haga clic en "Simular Lectura de Sensores"
-   - Observe los valores y el estado de cada sensor
-
-4. **Alertas** (⚠️)
-   - Vea el historial de alertas generadas
-   - Lea las recomendaciones inteligentes
-
-## Estructura del Proyecto
-
-```
-src/main/java/com/agrosense/
-├── model/              # Entidades del dominio
-├── service/            # Lógica de negocio
-└── ui/                 # Interfaces de usuario
-    ├── AgroSenseFX.java     # Interfaz gráfica JavaFX (Principal)
-    ├── AgroSenseGUI.java    # Interfaz gráfica Swing (Legacy)
-    └── ConsoleUI.java       # Interfaz de consola
+```bash
+  code .
 ```
 
-## Tecnologías
+### Interacción
 
-- **Java 17**: Lenguaje de programación
-- **JavaFX**: Interfaz gráfica moderna
-- **Maven**: Gestión de dependencias y construcción
+- Selecciona opciones desde el menú por consola.
 
-## Autor
+- Monitorea los lotes y revisa alertas generadas.
 
-AgroSense - Sistema de Monitoreo Agrícola Inteligente
+- Consulta recomendaciones de riego o fertilización.
+
+
+## Authors
+
+- [@Jhoan Alexander Molina Gomez    192490](https://github.com/Molina-university)
+- [@Adrian Camilo Rincon Ascanio    192531](https://github.com/CamiloRincon17)
+- [@Isaac David García Vesga        192535](https://github.com/Isaac-memoruy)
