@@ -1,0 +1,115 @@
+LOTE {
+  ID: L001
+  NOMBRE: "Sector Norte"
+  CULTIVO: "MaÃ­z"
+  AREA: 15.5
+  ETAPA: "GERMINACION"
+}
+LOTE {
+  ID: L002
+  NOMBRE: "Sector Sur"
+  CULTIVO: "Tomate"
+  AREA: 8.3
+  ETAPA: "GERMINACION"
+}
+LOTE {
+  ID: L003
+  NOMBRE: "Invernadero Principal"
+  CULTIVO: "Lechuga"
+  AREA: 4.2
+  ETAPA: "GERMINACION"
+}
+LOTE {
+  ID: L004
+  NOMBRE: "Campo Este"
+  CULTIVO: "Zanahorias"
+  AREA: 12.0
+  ETAPA: "GERMINACION"
+}
+LOTE {
+  ID: 12
+  NOMBRE: "izquina sur"
+  CULTIVO: "zanahorias"
+  AREA: 1.0
+  ETAPA: "GERMINACION"
+}
+LOTE {
+  ID: 2
+  NOMBRE: "ahha"
+  CULTIVO: "zanahoria"
+  AREA: 2.0
+  ETAPA: "GERMINACION"
+  SENSORES {
+    SENSOR {
+      ID: 12
+      TIPO: HUMEDAD
+      UBICACION: "1"
+    }
+  }
+}
+ALERTA {
+  NIVEL: CRITICAL
+  MENSAJE: "Humedad crÃ­tica baja (25.34%)"
+  FECHA: 2025-11-28T20:30:15
+  LOTE: L001
+}
+ALERTA {
+  NIVEL: WARNING
+  MENSAJE: "Humedad baja (42.18%)"
+  FECHA: 2025-11-28T20:31:22
+  LOTE: L002
+}
+ALERTA {
+  NIVEL: CRITICAL
+  MENSAJE: "Temperatura crÃ­tica alta (36.72Â°C)"
+  FECHA: 2025-11-28T20:32:45
+  LOTE: L003
+}
+ALERTA {
+  NIVEL: WARNING
+  MENSAJE: "Humedad baja (48.95%)"
+  FECHA: 2025-11-28T20:33:10
+  LOTE: L004
+}
+ALERTA {
+  NIVEL: WARNING
+  MENSAJE: "Temperatura alta (31.25Â°C)"
+  FECHA: 2025-11-28T20:34:05
+  LOTE: L002
+}
+ALERTA {
+  NIVEL: CRITICAL
+  MENSAJE: "Humedad crítica baja (23,29%)"
+  FECHA: 2025-12-05T21:47:21.236791600
+  LOTE: 12
+}
+ALERTA {
+  NIVEL: CRITICAL
+  MENSAJE: "Humedad crítica baja (28,24%)"
+  FECHA: 2025-12-05T21:47:42.791349100
+  LOTE: 12
+}
+ALERTA {
+  NIVEL: CRITICAL
+  MENSAJE: "Humedad crítica baja (28,73%)"
+  FECHA: 2025-12-05T21:47:43.567767500
+  LOTE: 12
+}
+ALERTA {
+  NIVEL: WARNING
+  MENSAJE: "Humedad baja (44,59%)"
+  FECHA: 2025-12-05T21:47:44.113730400
+  LOTE: 12
+}
+ALERTA {
+  NIVEL: CRITICAL
+  MENSAJE: "Humedad crítica baja (18,75%)"
+  FECHA: 2025-12-05T21:47:44.313191300
+  LOTE: 12
+}
+ALERTA {
+  NIVEL: WARNING
+  MENSAJE: "Humedad baja (43,47%)"
+  FECHA: 2025-12-05T21:47:44.947480600
+  LOTE: 12
+}
