@@ -46,20 +46,6 @@ LOTE {
   ETAPA: "GERMINACION"
 }
 LOTE {
-  ID: 2
-  NOMBRE: "ahha"
-  CULTIVO: "zanahoria"
-  AREA: 2.0
-  ETAPA: "GERMINACION"
-}
-LOTE {
-  ID: 11
-  NOMBRE: "eee"
-  CULTIVO: "dddd"
-  AREA: 12.0
-  ETAPA: "GERMINACION"
-}
-LOTE {
   ID: L001
   NOMBRE: "Sector Norte"
   CULTIVO: "Maiz"

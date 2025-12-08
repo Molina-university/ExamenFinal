@@ -36,10 +36,16 @@ public class AgroSenseFX extends Application {
     private TextArea txtRecomendaciones;
     private ComboBox<String> comboLotesSensor;
 
-    // Colors
-    private static final String PRIMARY_COLOR = "#228B22";
+    // Colors - Modern Premium Palette
+    private static final String PRIMARY_COLOR = "#2E7D32";
+    private static final String PRIMARY_DARK = "#1B5E20";
     private static final String ACCENT_COLOR = "#4CAF50";
-    private static final String BG_COLOR = "#F5F8FA";
+    private static final String ACCENT_LIGHT = "#66BB6A";
+    private static final String BG_GRADIENT = "linear-gradient(to bottom right, #E8F5E9, #F1F8F4, #E3F2FD)";
+    private static final String SUCCESS_COLOR = "#4CAF50";
+    private static final String WARNING_COLOR = "#FF9800";
+    private static final String DANGER_COLOR = "#F44336";
+    private static final String INFO_COLOR = "#2196F3";
 
     private boolean isReady = false; // Flag to prevent saves during initialization
 
@@ -54,7 +60,7 @@ public class AgroSenseFX extends Application {
 
         BorderPane root = new BorderPane();
         root.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-        root.setStyle("-fx-background-color: " + BG_COLOR + ";");
+        root.setStyle("-fx-background-color: " + BG_GRADIENT + ";");
 
         // Header
         root.setTop(createHeader());
@@ -81,7 +87,7 @@ public class AgroSenseFX extends Application {
         isReady = true;
         System.out.println("[INFO] Aplicación lista. Auto-guardado activado.");
 
-        Scene scene = new Scene(root, 1100, 700);
+        Scene scene = new Scene(root, 1400, 800);
         primaryStage.setTitle("AgroSense - Sistema de Monitoreo Agrícola");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -94,19 +100,22 @@ public class AgroSenseFX extends Application {
 
     private HBox createHeader() {
         HBox header = new HBox();
-        header.setPadding(new Insets(15, 25, 15, 25));
+        header.setPadding(new Insets(20, 30, 20, 30));
         header.setAlignment(Pos.CENTER_LEFT);
-        header.setStyle("-fx-background-color: " + PRIMARY_COLOR + ";");
+        header.setStyle("-fx-background-color: linear-gradient(to right, #2E7D32, #1B5E20, #004D40); " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 12, 0, 0, 4);");
         header.setSpacing(20);
 
-        VBox titleBox = new VBox();
+        VBox titleBox = new VBox(5);
         Label title = new Label("🌿 AgroSense");
-        title.setFont(Font.font("Segoe UI", FontWeight.BOLD, 28));
+        title.setFont(Font.font("Segoe UI", FontWeight.BOLD, 32));
         title.setTextFill(Color.WHITE);
+        title.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 4, 0, 0, 2);");
 
         Label subtitle = new Label("Sistema Inteligente de Monitoreo Agrícola");
-        subtitle.setFont(Font.font("Segoe UI", 14));
-        subtitle.setTextFill(Color.web("#C8E6C9"));
+        subtitle.setFont(Font.font("Segoe UI", FontWeight.NORMAL, 15));
+        subtitle.setTextFill(Color.web("#A5D6A7"));
+        subtitle.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 2, 0, 0, 1);");
 
         titleBox.getChildren().addAll(title, subtitle);
 
@@ -125,12 +134,14 @@ public class AgroSenseFX extends Application {
     }
 
     // --- Lotes View ---
-    private VBox createLotesView() {
-        VBox layout = new VBox(20);
+    private HBox createLotesView() {
+        HBox layout = new HBox(20);
         layout.setPadding(new Insets(20));
 
-        // Form
+        // Form (Left Side)
         VBox formCard = createCard("➕ Registrar Nuevo Lote");
+        formCard.setPrefWidth(400);
+        formCard.setMaxWidth(450);
         GridPane grid = new GridPane();
         grid.setHgap(15);
         grid.setVgap(15);
@@ -178,29 +189,34 @@ public class AgroSenseFX extends Application {
         grid.add(btnRegistrar, 1, 4);
         formCard.getChildren().add(grid);
 
-        // Table
+        // Table (Right Side)
         VBox tableCard = createCard("📋 Lotes Registrados");
         tableLotes = new TableView<>();
 
         TableColumn<Lote, String> colId = new TableColumn<>("ID");
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colId.setPrefWidth(80);
+        colId.setPrefWidth(100);
+        colId.setMinWidth(80);
 
         TableColumn<Lote, String> colNombre = new TableColumn<>("Nombre");
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colNombre.setPrefWidth(150);
+        colNombre.setPrefWidth(200);
+        colNombre.setMinWidth(150);
 
         TableColumn<Lote, String> colCultivo = new TableColumn<>("Cultivo");
         colCultivo.setCellValueFactory(new PropertyValueFactory<>("tipoCultivo"));
-        colCultivo.setPrefWidth(120);
+        colCultivo.setPrefWidth(150);
+        colCultivo.setMinWidth(120);
 
         TableColumn<Lote, Double> colArea = new TableColumn<>("Área (ha)");
         colArea.setCellValueFactory(new PropertyValueFactory<>("area"));
-        colArea.setPrefWidth(100);
+        colArea.setPrefWidth(180);
+        colArea.setMinWidth(100);
 
         // Columna de Acciones
         TableColumn<Lote, Void> colAcciones = new TableColumn<>("Acciones");
-        colAcciones.setPrefWidth(200);
+        colAcciones.setPrefWidth(240);
+        colAcciones.setMinWidth(240);
         colAcciones.setCellFactory(col -> {
             return new TableCell<Lote, Void>() {
                 private final Button btnEditar = new Button("Editar");
@@ -209,9 +225,9 @@ public class AgroSenseFX extends Application {
 
                 {
                     btnEditar.setStyle(
-                            "-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+                            "-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-min-width: 100px; -fx-pref-width: 100px; -fx-padding: 8 16;");
                     btnEliminar.setStyle(
-                            "-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+                            "-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-min-width: 100px; -fx-pref-width: 100px; -fx-padding: 8 16;");
                     pane.setAlignment(Pos.CENTER);
 
                     btnEditar.setOnAction(event -> {
@@ -234,10 +250,18 @@ public class AgroSenseFX extends Application {
         });
 
         tableLotes.getColumns().addAll(colId, colNombre, colCultivo, colArea, colAcciones);
+        // Use UNCONSTRAINED to show full text
+        // Use CONSTRAINED to adapt to screen size
         tableLotes.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        // Disable editing and column reordering to prevent errors
+        tableLotes.setEditable(false);
+        tableLotes.getColumns().forEach(col -> col.setReorderable(false));
+        // Add CSS class for individual styling
+        tableLotes.getStyleClass().add("tabla-lotes");
 
         tableCard.getChildren().add(tableLotes);
-        VBox.setVgrow(tableCard, Priority.ALWAYS);
+        VBox.setVgrow(tableLotes, Priority.ALWAYS);
+        HBox.setHgrow(tableCard, Priority.ALWAYS);
 
         layout.getChildren().addAll(formCard, tableCard);
         return layout;
@@ -319,12 +343,14 @@ public class AgroSenseFX extends Application {
     }
 
     // --- Sensores View ---
-    private VBox createSensoresView() {
-        VBox layout = new VBox(20);
+    private HBox createSensoresView() {
+        HBox layout = new HBox(20);
         layout.setPadding(new Insets(20));
 
-        // 1. Formulario (Create / Update)
+        // 1. Formulario (Left Side)
         VBox formCard = createCard("📡 Gestión de Sensores");
+        formCard.setPrefWidth(400);
+        formCard.setMaxWidth(450);
         GridPane grid = new GridPane();
         grid.setHgap(15);
         grid.setVgap(15);
@@ -353,29 +379,34 @@ public class AgroSenseFX extends Application {
 
         formCard.getChildren().add(grid);
 
-        // 2. Tabla de Sensores (Read)
+        // 2. Tabla de Sensores (Right Side)
         VBox tableCard = createCard("📋 Lista de Sensores");
         tableSensores = new TableView<>();
 
         TableColumn<SensorViewModel, String> colLote = new TableColumn<>("Lote");
         colLote.setCellValueFactory(new PropertyValueFactory<>("loteNombre"));
-        colLote.setPrefWidth(150);
+        colLote.setPrefWidth(200);
+        colLote.setMinWidth(150);
 
         TableColumn<SensorViewModel, String> colId = new TableColumn<>("ID Sensor");
         colId.setCellValueFactory(new PropertyValueFactory<>("sensorId"));
-        colId.setPrefWidth(100);
+        colId.setPrefWidth(130);
+        colId.setMinWidth(100);
 
         TableColumn<SensorViewModel, String> colTipo = new TableColumn<>("Tipo");
         colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
-        colTipo.setPrefWidth(120);
+        colTipo.setPrefWidth(150);
+        colTipo.setMinWidth(120);
 
         TableColumn<SensorViewModel, String> colUbicacion = new TableColumn<>("Ubicación");
         colUbicacion.setCellValueFactory(new PropertyValueFactory<>("ubicacion"));
         colUbicacion.setPrefWidth(200);
+        colUbicacion.setMinWidth(180);
 
         // Columna de Acciones
         TableColumn<SensorViewModel, Void> colAcciones = new TableColumn<>("Acciones");
-        colAcciones.setPrefWidth(200);
+        colAcciones.setPrefWidth(240);
+        colAcciones.setMinWidth(240);
         colAcciones.setCellFactory(col -> {
             return new TableCell<SensorViewModel, Void>() {
                 private final Button btnEditar = new Button("Editar");
@@ -384,9 +415,9 @@ public class AgroSenseFX extends Application {
 
                 {
                     btnEditar.setStyle(
-                            "-fx-background-color: #18c838ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+                            "-fx-background-color: #18c838ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-min-width: 100px; -fx-pref-width: 100px; -fx-padding: 8 16;");
                     btnEliminar.setStyle(
-                            "-fx-background-color: #272424ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+                            "-fx-background-color: #272424ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-min-width: 100px; -fx-pref-width: 100px; -fx-padding: 8 16;");
                     pane.setAlignment(Pos.CENTER);
 
                     btnEditar.setOnAction(event -> {
@@ -409,10 +440,18 @@ public class AgroSenseFX extends Application {
         });
 
         tableSensores.getColumns().addAll(colLote, colId, colTipo, colUbicacion, colAcciones);
+        // Use UNCONSTRAINED to show full text
+        // Use CONSTRAINED to adapt to screen size
         tableSensores.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        // Disable editing and column reordering to prevent errors
+        tableSensores.setEditable(false);
+        tableSensores.getColumns().forEach(col -> col.setReorderable(false));
+        // Add CSS class for individual styling
+        tableSensores.getStyleClass().add("tabla-sensores");
 
         tableCard.getChildren().add(tableSensores);
-        VBox.setVgrow(tableCard, Priority.ALWAYS);
+        VBox.setVgrow(tableSensores, Priority.ALWAYS);
+        HBox.setHgrow(tableCard, Priority.ALWAYS);
 
         // Lógica de Botones
         btnAgregar.setOnAction(e -> {
@@ -541,21 +580,43 @@ public class AgroSenseFX extends Application {
 
         TableColumn<MedicionViewModel, String> colLote = new TableColumn<>("Lote");
         colLote.setCellValueFactory(new PropertyValueFactory<>("lote"));
+        colLote.setPrefWidth(300);
+        colLote.setMinWidth(150);
 
         TableColumn<MedicionViewModel, String> colSensor = new TableColumn<>("Sensor");
         colSensor.setCellValueFactory(new PropertyValueFactory<>("sensorId"));
+        colSensor.setPrefWidth(200);
+        colSensor.setMinWidth(100);
 
         TableColumn<MedicionViewModel, String> colTipo = new TableColumn<>("Tipo");
         colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        colTipo.setPrefWidth(300);
+        colTipo.setMinWidth(180);
+
+        TableColumn<MedicionViewModel, String> colCultivo = new TableColumn<>("Cultivo");
+        colCultivo.setCellValueFactory(new PropertyValueFactory<>("cultivo"));
+        colCultivo.setPrefWidth(300);
+        colCultivo.setMinWidth(180);
 
         TableColumn<MedicionViewModel, String> colValor = new TableColumn<>("Valor");
         colValor.setCellValueFactory(new PropertyValueFactory<>("valor"));
+        colValor.setPrefWidth(200);
+        colValor.setMinWidth(100);
 
         TableColumn<MedicionViewModel, String> colEstado = new TableColumn<>("Estado");
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        colEstado.setPrefWidth(200);
+        colEstado.setMinWidth(150);
 
-        tableMonitoreo.getColumns().addAll(colLote, colSensor, colTipo, colValor, colEstado);
+        tableMonitoreo.getColumns().addAll(colLote, colSensor, colTipo, colCultivo, colValor, colEstado);
+        // Use UNCONSTRAINED to show full text
+        // Use CONSTRAINED to adapt to screen size
         tableMonitoreo.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        // Disable editing and column reordering to prevent errors
+        tableMonitoreo.setEditable(false);
+        tableMonitoreo.getColumns().forEach(col -> col.setReorderable(false));
+        // Add CSS class for individual styling
+        tableMonitoreo.getStyleClass().add("tabla-monitoreo");
 
         tableCard.getChildren().add(tableMonitoreo);
         VBox.setVgrow(tableCard, Priority.ALWAYS);
@@ -565,31 +626,48 @@ public class AgroSenseFX extends Application {
     }
 
     // --- Alertas View ---
-    private VBox createAlertasView() {
-        VBox layout = new VBox(20);
+    private HBox createAlertasView() {
+        HBox layout = new HBox(20);
         layout.setPadding(new Insets(20));
 
+        // Left Side: Alertas Table
         VBox alertsCard = createCard("⚠️ Historial de Alertas");
+        alertsCard.setPrefWidth(800);
         tableAlertas = new TableView<>();
 
         TableColumn<Alerta, String> colFecha = new TableColumn<>("Fecha");
         colFecha.setCellValueFactory(
                 cellData -> new SimpleStringProperty(cellData.getValue().getFechaHora().toString().replace("T", " ")));
+        colFecha.setPrefWidth(200);
+        colFecha.setMinWidth(180);
 
         TableColumn<Alerta, String> colNivel = new TableColumn<>("Nivel");
         colNivel.setCellValueFactory(new PropertyValueFactory<>("nivel"));
+        colNivel.setPrefWidth(130);
+        colNivel.setMinWidth(100);
 
         TableColumn<Alerta, String> colLote = new TableColumn<>("Lote");
         colLote.setCellValueFactory(new PropertyValueFactory<>("loteId"));
+        colLote.setPrefWidth(130);
+        colLote.setMinWidth(100);
 
         TableColumn<Alerta, String> colMensaje = new TableColumn<>("Mensaje");
         colMensaje.setCellValueFactory(new PropertyValueFactory<>("mensaje"));
+        colMensaje.setPrefWidth(450);
+        colMensaje.setMinWidth(350);
 
         tableAlertas.getColumns().addAll(colFecha, colNivel, colLote, colMensaje);
+        // Use UNCONSTRAINED to show full text
+        // Use CONSTRAINED to adapt to screen size
         tableAlertas.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        // Disable editing and column reordering to prevent errors
+        tableAlertas.setEditable(false);
+        tableAlertas.getColumns().forEach(col -> col.setReorderable(false));
+        // Add CSS class for individual styling
+        tableAlertas.getStyleClass().add("tabla-alertas");
 
         alertsCard.getChildren().add(tableAlertas);
-        VBox.setVgrow(alertsCard, Priority.ALWAYS);
+        VBox.setVgrow(tableAlertas, Priority.ALWAYS);
 
         // Botón para limpiar alertas
         Button btnLimpiarAlertas = createStyledButton("🧹 Limpiar Alertas");
@@ -612,15 +690,19 @@ public class AgroSenseFX extends Application {
 
         alertsCard.getChildren().add(btnLimpiarAlertas);
 
+        // Right Side: Recomendaciones
         VBox recomCard = createCard("💡 Recomendaciones Inteligentes");
         txtRecomendaciones = new TextArea();
         txtRecomendaciones.setEditable(false);
         txtRecomendaciones.setWrapText(true);
+        txtRecomendaciones.setPrefHeight(400);
 
         Button btnRefresh = createStyledButton("🔄 Actualizar");
         btnRefresh.setOnAction(e -> actualizarAlertas());
 
         recomCard.getChildren().addAll(txtRecomendaciones, btnRefresh);
+        VBox.setVgrow(txtRecomendaciones, Priority.ALWAYS);
+        HBox.setHgrow(recomCard, Priority.ALWAYS);
 
         layout.getChildren().addAll(alertsCard, recomCard);
         return layout;
@@ -628,13 +710,20 @@ public class AgroSenseFX extends Application {
 
     // --- Helpers ---
     private VBox createCard(String title) {
-        VBox card = new VBox(10);
-        card.setPadding(new Insets(15));
+        VBox card = new VBox(15);
+        card.setPadding(new Insets(24));
         card.setStyle(
-                "-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0); -fx-background-radius: 5;");
+                "-fx-background-color: rgba(255, 255, 255, 0.95); " +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5); " +
+                        "-fx-background-radius: 12; " +
+                        "-fx-border-color: rgba(200, 230, 201, 0.3); " +
+                        "-fx-border-width: 1; " +
+                        "-fx-border-radius: 12;");
 
         Label lblTitle = new Label(title);
-        lblTitle.setFont(Font.font("Segoe UI", FontWeight.BOLD, 16));
+        lblTitle.setFont(Font.font("Segoe UI", FontWeight.BOLD, 18));
+        lblTitle.setTextFill(Color.web(PRIMARY_DARK));
+        lblTitle.setStyle("-fx-padding: 0 0 10 0;");
 
         card.getChildren().add(lblTitle);
         return card;
@@ -649,9 +738,35 @@ public class AgroSenseFX extends Application {
 
     private Button createStyledButton(String text) {
         Button btn = new Button(text);
-        btn.setStyle("-fx-background-color: white; -fx-text-fill: " + PRIMARY_COLOR + "; -fx-border-color: "
-                + PRIMARY_COLOR + "; -fx-border-radius: 3; -fx-background-radius: 3;");
+        btn.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, " + ACCENT_COLOR + ", #45A049); " +
+                        "-fx-text-fill: white; " +
+                        "-fx-background-radius: 8; " +
+                        "-fx-padding: 10 20; " +
+                        "-fx-font-weight: 600; " +
+                        "-fx-font-size: 13px; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(46,125,50,0.3), 8, 0, 0, 3);");
         btn.setCursor(javafx.scene.Cursor.HAND);
+
+        // Add hover effect
+        btn.setOnMouseEntered(e -> btn.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #66BB6A, " + ACCENT_COLOR + "); " +
+                        "-fx-text-fill: white; " +
+                        "-fx-background-radius: 8; " +
+                        "-fx-padding: 10 20; " +
+                        "-fx-font-weight: 600; " +
+                        "-fx-font-size: 13px; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(46,125,50,0.4), 12, 0, 0, 5);"));
+
+        btn.setOnMouseExited(e -> btn.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, " + ACCENT_COLOR + ", #45A049); " +
+                        "-fx-text-fill: white; " +
+                        "-fx-background-radius: 8; " +
+                        "-fx-padding: 10 20; " +
+                        "-fx-font-weight: 600; " +
+                        "-fx-font-size: 13px; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(46,125,50,0.3), 8, 0, 0, 3);"));
+
         return btn;
     }
 
@@ -683,7 +798,7 @@ public class AgroSenseFX extends Application {
 
             // Agregar sensores de este lote a la tabla
             for (Sensor sensor : lote.getSensores()) {
-                data.add(new SensorViewModel(lote.getId(), lote.getNombre(), sensor));
+                data.add(new SensorViewModel(lote.getId(), lote.getNombre(), lote.getTipoCultivo(), sensor));
             }
         }
 
@@ -713,7 +828,8 @@ public class AgroSenseFX extends Application {
                 }
 
                 String valorStr = String.format("%.1f%s", valor, sensor.getTipo().equals("HUMEDAD") ? "%" : "°C");
-                data.add(new MedicionViewModel(lote.getNombre(), sensor.getId(), sensor.getTipo(), valorStr, estado));
+                data.add(new MedicionViewModel(lote.getNombre(), sensor.getId(), sensor.getTipo(),
+                        lote.getTipoCultivo(), valorStr, estado));
             }
         }
         tableMonitoreo.setItems(data);
@@ -784,13 +900,16 @@ public class AgroSenseFX extends Application {
         private final SimpleStringProperty lote;
         private final SimpleStringProperty sensorId;
         private final SimpleStringProperty tipo;
+        private final SimpleStringProperty cultivo;
         private final SimpleStringProperty valor;
         private final SimpleStringProperty estado;
 
-        public MedicionViewModel(String lote, String sensorId, String tipo, String valor, String estado) {
+        public MedicionViewModel(String lote, String sensorId, String tipo, String cultivo, String valor,
+                String estado) {
             this.lote = new SimpleStringProperty(lote);
             this.sensorId = new SimpleStringProperty(sensorId);
             this.tipo = new SimpleStringProperty(tipo);
+            this.cultivo = new SimpleStringProperty(cultivo);
             this.valor = new SimpleStringProperty(valor);
             this.estado = new SimpleStringProperty(estado);
         }
@@ -814,6 +933,14 @@ public class AgroSenseFX extends Application {
         public String getEstado() {
             return estado.get();
         }
+
+        public String getCultivo() {
+            return cultivo.get();
+        }
+
+        public void setCultivo(String cultivo) {
+            this.cultivo.set(cultivo);
+        }
     }
 
     // ViewModel for Sensors Table
@@ -822,16 +949,18 @@ public class AgroSenseFX extends Application {
         private final SimpleStringProperty loteNombre;
         private final SimpleStringProperty sensorId;
         private final SimpleStringProperty tipo;
+        private final SimpleStringProperty cultivo;
         private final SimpleStringProperty ubicacion;
         private final Sensor sensor;
 
-        public SensorViewModel(String loteId, String loteNombre, Sensor sensor) {
+        public SensorViewModel(String loteId, String loteNombre, String cultivo, Sensor sensor) {
             this.loteId = new SimpleStringProperty(loteId);
             this.loteNombre = new SimpleStringProperty(loteNombre);
             this.sensor = sensor;
             this.sensorId = new SimpleStringProperty(sensor.getId());
             this.tipo = new SimpleStringProperty(sensor.getTipo());
             this.ubicacion = new SimpleStringProperty(sensor.getUbicacion());
+            this.cultivo = new SimpleStringProperty(cultivo);
         }
 
         public String getLoteId() {
@@ -857,5 +986,6 @@ public class AgroSenseFX extends Application {
         public Sensor getSensor() {
             return sensor;
         }
+
     }
 }
