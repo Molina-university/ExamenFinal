@@ -65,7 +65,7 @@
 
 .button:hover {
     -fx-background-color: linear-gradient(to bottom, #66BB6A, #4CAF50);
-    -fx-effect: dropshadow(gaussian, rgba(46, 125, 50, 0.4), 12, 0, 0, 5);
+    -fx-effect: dropshadow(gaussian, rgba(46, 125, 50, 0.6), 16, 0, 0, 8);
     -fx-scale-y: 1.02;
     -fx-scale-x: 1.02;
 }
@@ -616,4 +616,74 @@
 
 .tabla-alertas .table-row-cell {
     /* Custom row styles for Alertas if needed */
+}
+
+/* ============================================
+   BOTONES DE ACCIONES - Efecto de Brillo con Transición
+   ============================================ */
+/* Clase para botón Registrar */
+.btn-registrar {
+    -fx-background-color: #2E7D32 !important;
+    -fx-text-fill: white !important;
+    -fx-font-weight: bold !important;
+}
+
+/* Efecto de brillo general mejorado para todos los botones */
+.button {
+    -fx-effect: dropshadow(gaussian, rgba(46, 125, 50, 0.3), 8, 0, 0, 3);
+}
+
+.button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(46, 125, 50, 0.6), 16, 0, 0, 8),
+                dropshadow(gaussian, rgba(255, 255, 255, 0.3), 10, 0, 0, 3) !important;
+    -fx-scale-x: 1.05 !important;
+    -fx-scale-y: 1.05 !important;
+}
+
+/* Efecto de brillo para botones en tablas */
+.table-cell .button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 12, 0.5, 0, 4),
+                dropshadow(gaussian, rgba(0, 0, 0, 0.3), 8, 0, 0, 2) !important;
+    -fx-scale-x: 1.08 !important;
+    -fx-scale-y: 1.08 !important;
+}
+
+/* Brillo para botón Registrar */
+#btnRegistrar:hover {
+    -fx-effect: dropshadow(gaussian, rgba(76, 175, 80, 0.7), 18, 0.5, 0, 8),
+                dropshadow(gaussian, rgba(255, 255, 255, 0.4), 12, 0, 0, 4) !important;
+    -fx-scale-x: 1.05 !important;
+    -fx-scale-y: 1.05 !important;
+}
+
+/* Brillo para botón Editar de Lotes */
+#btnEditar:hover {
+    -fx-effect: dropshadow(gaussian, rgba(33, 150, 243, 0.7), 18, 0.5, 0, 8),
+                dropshadow(gaussian, rgba(255, 255, 255, 0.4), 12, 0, 0, 4) !important;
+    -fx-scale-x: 1.05 !important;
+    -fx-scale-y: 1.05 !important;
+}
+
+/* Brillo para botón Eliminar de Lotes */
+#btnEliminar:hover {
+    -fx-effect: dropshadow(gaussian, rgba(244, 67, 54, 0.7), 18, 0.5, 0, 8),
+                dropshadow(gaussian, rgba(255, 255, 255, 0.4), 12, 0, 0, 4) !important;
+    -fx-scale-x: 1.05 !important;
+    -fx-scale-y: 1.05 !important;
+}
+
+/* Brillo para botón Editar de Sensores */
+#btnEditarSensor:hover {
+    -fx-effect: dropshadow(gaussian, rgba(24, 200, 56, 0.7), 18, 0.5, 0, 8),
+                dropshadow(gaussian, rgba(255, 255, 255, 0.4), 12, 0, 0, 4) !important;
+    -fx-scale-x: 1.05 !important;
+    -fx-scale-y: 1.05 !important;
+}
+
+/* Brillo para botón Eliminar de Sensores */
+#btnEliminarSensor:hover {
+    -fx-effect: dropshadow(gaussian, rgba(39, 36, 36, 0.7), 18, 0.5, 0, 8),
+                dropshadow(gaussian, rgba(255, 255, 255, 0.4), 12, 0, 0, 4) !important;
+    -fx-scale-x: 1.05 !important;
+    -fx-scale-y: 1.05 !important;
 }

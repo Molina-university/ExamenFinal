@@ -158,8 +158,8 @@ public class AgroSenseFX extends Application {
         addFormField(grid, "Área (ha):", txtArea, 3);
 
         Button btnRegistrar = createStyledButton("Registrar Lote");
-        btnRegistrar
-                .setStyle("-fx-background-color: " + PRIMARY_COLOR + "; -fx-text-fill: white; -fx-font-weight: bold;");
+        btnRegistrar.setId("btnRegistrar");
+        btnRegistrar.getStyleClass().add("btn-registrar");
         btnRegistrar.setOnAction(e -> {
             try {
                 String id = txtId.getText();
@@ -224,10 +224,12 @@ public class AgroSenseFX extends Application {
                 private final HBox pane = new HBox(10, btnEditar, btnEliminar);
 
                 {
+                    btnEditar.setId("btnEditar");
+                    btnEliminar.setId("btnEliminar");
                     btnEditar.setStyle(
-                            "-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-min-width: 100px; -fx-pref-width: 100px; -fx-padding: 8 16;");
+                            "-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 100px; -fx-pref-width: 100px; -fx-padding: 8 16;");
                     btnEliminar.setStyle(
-                            "-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-min-width: 100px; -fx-pref-width: 100px; -fx-padding: 8 16;");
+                            "-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 100px; -fx-pref-width: 100px; -fx-padding: 8 16;");
                     pane.setAlignment(Pos.CENTER);
 
                     btnEditar.setOnAction(event -> {
@@ -414,10 +416,12 @@ public class AgroSenseFX extends Application {
                 private final HBox pane = new HBox(10, btnEditar, btnEliminar);
 
                 {
+                    btnEditar.setId("btnEditarSensor");
+                    btnEliminar.setId("btnEliminarSensor");
                     btnEditar.setStyle(
-                            "-fx-background-color: #18c838ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-min-width: 100px; -fx-pref-width: 100px; -fx-padding: 8 16;");
+                            "-fx-background-color: #18c838ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 100px; -fx-pref-width: 100px; -fx-padding: 8 16;");
                     btnEliminar.setStyle(
-                            "-fx-background-color: #272424ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-min-width: 100px; -fx-pref-width: 100px; -fx-padding: 8 16;");
+                            "-fx-background-color: #272424ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 100px; -fx-pref-width: 100px; -fx-padding: 8 16;");
                     pane.setAlignment(Pos.CENTER);
 
                     btnEditar.setOnAction(event -> {
