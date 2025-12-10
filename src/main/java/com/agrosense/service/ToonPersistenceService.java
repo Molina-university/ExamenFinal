@@ -159,11 +159,6 @@ public class ToonPersistenceService {
             LocalDateTime fecha = LocalDateTime.parse(fechaStr);
 
             data.alertas.add(new Alerta(mensaje, nivel, loteId, fecha));
-            // Note: Alerta constructor sets date to now, we might need a setter or
-            // constructor that accepts date
-            // For now, we accept the new date or modify Alerta class.
-            // Let's assume for this exercise we just load them as new alerts or modify
-            // Alerta later if needed.
         }
 
         return data;
